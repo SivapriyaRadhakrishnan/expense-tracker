@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { FiHome, FiLogOut, FiUserPlus, FiShield } from 'react-icons/fi';
+import { FiLogOut, FiShield } from 'react-icons/fi';
 import { clearCurrentUser, getCurrentUser } from '../utils/auth';
 
 const Navbar = ({ isLanding = false, onLogout }) => {

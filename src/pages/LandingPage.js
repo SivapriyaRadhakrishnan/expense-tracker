@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUser } from '../utils/auth';
-import { FiArrowRight, FiShield, FiXCircle, FiCheckCircle, FiTarget, FiTrendingUp, FiActivity, FiAlertTriangle } from 'react-icons/fi';
-import { TbChartPie, TbSparkles, TbDeviceLaptop } from 'react-icons/tb';
+import { FiShield, FiXCircle, FiCheckCircle, FiTarget, FiTrendingUp, FiActivity, FiAlertTriangle } from 'react-icons/fi';
+import { TbChartPie, TbSparkles } from 'react-icons/tb';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 

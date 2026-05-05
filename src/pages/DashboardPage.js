@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FiArrowRight, FiCheckCircle, FiDollarSign, FiTrendingUp, FiLogOut, FiCreditCard, FiAlertTriangle } from 'react-icons/fi';
+import { FiArrowRight, FiCheckCircle, FiDollarSign, FiTrendingUp, FiCreditCard } from 'react-icons/fi';
 import Navbar from '../components/Navbar';
 import AlertBanner from '../components/AlertBanner';
 import BalanceCard from '../components/BalanceCard';
