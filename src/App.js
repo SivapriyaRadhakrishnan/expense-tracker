@@ -1,23 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import HeroSection from './components/HeroSection';
+import ProblemSolution from './components/ProblemSolution';
+import CoreIdea from './components/CoreIdea';
+import PersonaCard from './components/PersonaCard';
+import DashboardPreview from './components/DashboardPreview';
+import GamificationSection from './components/GamificationSection';
+import Features from './components/Features';
+import UserFlow from './components/UserFlow';
+import FinalResult from './components/FinalResult';
+import Footer from './components/Footer';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="min-h-screen">
+      <HeroSection />
+      <ProblemSolution />
+      <CoreIdea />
+      <PersonaCard />
+      <DashboardPreview />
+      <GamificationSection />
+      <Features />
+      <UserFlow />
+      <FinalResult />
+      <Footer />
     </div>
   );
 }
