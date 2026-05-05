@@ -7,6 +7,8 @@ const DashboardPreview = () => {
   const [transactions, setTransactions] = useLocalStorage('flowfi_transactions', []);
   const [budgetLimit, setBudgetLimit] = useLocalStorage('flowfi_budget_limit', 1000);
   const [newTransaction, setNewTransaction] = useState({ type: 'Expense', amount: '', description: '' });
+  const [editingId, setEditingId] = useState(null);
+  const [editTransaction, setEditTransaction] = useState({ type: 'Expense', amount: '', description: '' });
 
   const income = useMemo(
     () => transactions.filter(t => t.type === 'Income').reduce((sum, t) => sum + Number(t.amount), 0),
@@ -43,6 +45,41 @@ const DashboardPreview = () => {
 
     setTransactions(prev => [transaction, ...prev]);
     setNewTransaction({ type: 'Expense', amount: '', description: '' });
+  };
+
+  const handleEditTransaction = (id) => {
+    const transaction = transactions.find(t => t.id === id);
+    if (transaction) {
+      setEditingId(id);
+      setEditTransaction({
+        type: transaction.type,
+        amount: transaction.amount.toString(),
+        description: transaction.description
+      });
+    }
+  };
+
+  const handleUpdateTransaction = () => {
+    if (!editTransaction.amount || !editTransaction.description) return;
+
+    setTransactions(prev => prev.map(t =>
+      t.id === editingId
+        ? { ...t, ...editTransaction, amount: Number(editTransaction.amount) }
+        : t
+    ));
+    setEditingId(null);
+    setEditTransaction({ type: 'Expense', amount: '', description: '' });
+  };
+
+  const handleDeleteTransaction = (id) => {
+    if (window.confirm('Are you sure you want to delete this transaction?')) {
+      setTransactions(prev => prev.filter(t => t.id !== id));
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditTransaction({ type: 'Expense', amount: '', description: '' });
   };
 
   return (
@@ -113,7 +150,7 @@ const DashboardPreview = () => {
           </div>
         </motion.div>
 
-        {/* Add Transaction Form */}
+        {/* Add/Edit Transaction Form */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -121,11 +158,16 @@ const DashboardPreview = () => {
           viewport={{ once: true }}
           className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-soft max-w-2xl mx-auto"
         >
-          <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">Add New Transaction</h3>
+          <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">
+            {editingId ? 'Edit Transaction' : 'Add New Transaction'}
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <select
-              value={newTransaction.type}
-              onChange={(e) => setNewTransaction(prev => ({ ...prev, type: e.target.value }))}
+              value={editingId ? editTransaction.type : newTransaction.type}
+              onChange={(e) => editingId
+                ? setEditTransaction(prev => ({ ...prev, type: e.target.value }))
+                : setNewTransaction(prev => ({ ...prev, type: e.target.value }))
+              }
               className="px-4 py-3 rounded-2xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
             >
               <option value="Income">Income</option>
@@ -134,16 +176,22 @@ const DashboardPreview = () => {
             <input
               type="number"
               placeholder="Amount"
-              value={newTransaction.amount}
-              onChange={(e) => setNewTransaction(prev => ({ ...prev, amount: e.target.value }))}
+              value={editingId ? editTransaction.amount : newTransaction.amount}
+              onChange={(e) => editingId
+                ? setEditTransaction(prev => ({ ...prev, amount: e.target.value }))
+                : setNewTransaction(prev => ({ ...prev, amount: e.target.value }))
+              }
               className="px-4 py-3 rounded-2xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
             />
           </div>
           <input
             type="text"
             placeholder="Description"
-            value={newTransaction.description}
-            onChange={(e) => setNewTransaction(prev => ({ ...prev, description: e.target.value }))}
+            value={editingId ? editTransaction.description : newTransaction.description}
+            onChange={(e) => editingId
+              ? setEditTransaction(prev => ({ ...prev, description: e.target.value }))
+              : setNewTransaction(prev => ({ ...prev, description: e.target.value }))
+            }
             className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none mb-4"
           />
           <div className="mb-4">
@@ -156,12 +204,22 @@ const DashboardPreview = () => {
               className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
             />
           </div>
-          <button
-            onClick={handleAddTransaction}
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-2xl font-semibold hover:shadow-lg transition-shadow"
-          >
-            Add Transaction
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={editingId ? handleUpdateTransaction : handleAddTransaction}
+              className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-2xl font-semibold hover:shadow-lg transition-shadow"
+            >
+              {editingId ? 'Update Transaction' : 'Add Transaction'}
+            </button>
+            {editingId && (
+              <button
+                onClick={handleCancelEdit}
+                className="px-6 py-3 bg-gray-200 text-gray-700 rounded-2xl font-semibold hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+            )}
+          </div>
         </motion.div>
 
         {/* Recent Transactions */}
@@ -176,13 +234,31 @@ const DashboardPreview = () => {
             <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">Recent Transactions</h3>
             <div className="space-y-3">
               {transactions.slice(0, 5).map((transaction) => (
-                <div key={transaction.id} className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl">
-                  <div>
+                <div key={transaction.id} className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl group hover:bg-gray-100 transition-colors">
+                  <div className="flex-1">
                     <div className="font-semibold text-gray-900">{transaction.description}</div>
                     <div className="text-sm text-gray-600">{transaction.type}</div>
                   </div>
-                  <div className={`font-bold ${transaction.type === 'Income' ? 'text-green-600' : 'text-red-600'}`}>
-                    {transaction.type === 'Income' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                  <div className="flex items-center gap-3">
+                    <div className={`font-bold ${transaction.type === 'Income' ? 'text-green-600' : 'text-red-600'}`}>
+                      {transaction.type === 'Income' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                    </div>
+                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        onClick={() => handleEditTransaction(transaction.id)}
+                        className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
+                        title="Edit transaction"
+                      >
+                        ✏️
+                      </button>
+                      <button
+                        onClick={() => handleDeleteTransaction(transaction.id)}
+                        className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+                        title="Delete transaction"
+                      >
+                        🗑️
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
