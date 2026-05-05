@@ -1,42 +1,45 @@
-import React from 'react';
-
 function BudgetStatusCard({ expense, budgetLimit, status }) {
   const ratio = budgetLimit > 0 ? Math.min(expense / budgetLimit, 1) : 0;
   const percentage = Math.round(ratio * 100);
-
-  const barClasses =
+  const progressColor =
     status === 'danger'
-      ? 'budget-progress__bar budget-progress__bar--danger'
+      ? 'from-rose-500 to-rose-400'
       : status === 'warning'
-      ? 'budget-progress__bar budget-progress__bar--warning'
-      : 'budget-progress__bar budget-progress__bar--safe';
+      ? 'from-amber-500 to-amber-400'
+      : 'from-indigo-500 to-violet-500';
 
   return (
-    <div className="budget-status-card">
-      <div className="budget-status-card__header">
+    <div className="space-y-6">
+      <div className="flex items-center justify-between rounded-[28px] bg-slate-950 p-6 text-white shadow-soft">
         <div>
-          <p className="sm-label">🎯 Budget status</p>
-          <h2>Current spending</h2>
+          <p className="text-sm uppercase tracking-[0.24em] text-slate-400">Budget status</p>
+          <h2 className="mt-2 text-2xl font-semibold">Current spending</h2>
         </div>
-        <div className="status-pill status-pill--${status}">{status === 'danger' ? 'Exceeded' : status === 'warning' ? 'Near limit' : 'Safe'}</div>
-      </div>
-
-      <div className="budget-status-card__row">
-        <div>
-          <p className="label-small">💸 Spent</p>
-          <p className="budget-number">${expense.toFixed(2)}</p>
-        </div>
-        <div>
-          <p className="label-small">🎯 Limit</p>
-          <p className="budget-number">{budgetLimit > 0 ? `$${budgetLimit.toFixed(2)}` : 'Not set'}</p>
+        <div className="rounded-3xl bg-white/10 px-4 py-2 text-sm font-semibold uppercase tracking-[0.18em] text-slate-100">
+          {status === 'danger' ? 'Exceeded' : status === 'warning' ? 'Near limit' : 'Safe'}
         </div>
       </div>
 
-      <div className="budget-progress">
-        <div className="budget-progress__track">
-          <div className={barClasses} style={{ width: `${percentage}%` }} />
+      <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <p className="text-sm text-slate-500">Spent</p>
+            <p className="mt-2 text-2xl font-semibold text-slate-950">${expense.toFixed(2)}</p>
+          </div>
+          <div>
+            <p className="text-sm text-slate-500">Limit</p>
+            <p className="mt-2 text-2xl font-semibold text-slate-950">
+              {budgetLimit > 0 ? `$${budgetLimit.toFixed(2)}` : 'Not set'}
+            </p>
+          </div>
         </div>
-        <p className="budget-progress__text">{percentage}% of limit used</p>
+
+        <div className="mt-6 space-y-3">
+          <div className="h-4 overflow-hidden rounded-full bg-slate-100">
+            <div className={`h-full rounded-full bg-gradient-to-r ${progressColor}`} style={{ width: `${percentage}%` }} />
+          </div>
+          <p className="text-sm text-slate-500">{percentage}% of limit used</p>
+        </div>
       </div>
     </div>
   );

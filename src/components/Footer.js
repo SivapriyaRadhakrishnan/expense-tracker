@@ -1,5 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import {
+  FiDollarSign,
+  FiShield,
+  FiFileText,
+  FiHelpCircle,
+  FiHeart
+} from 'react-icons/fi';
 
 const Footer = () => {
   return (
@@ -12,27 +19,38 @@ const Footer = () => {
           viewport={{ once: true }}
           className="text-center"
         >
-          <div className="text-4xl mb-4">💸</div>
+          {/* ICON */}
+         
           <h3 className="text-2xl font-bold mb-4">FlowFi</h3>
+
           <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
             Turn spending into a smart habit with gamified finance tracking.
             Beautiful design meets powerful functionality.
           </p>
 
-          <div className="flex justify-center space-x-6 mb-8">
-            <button className="text-gray-400 hover:text-white transition-colors">
+          {/* LINKS WITH ICONS */}
+          <div className="flex justify-center gap-8 mb-8 text-sm">
+            <button className="flex items-center gap-2 text-gray-400 hover:text-white transition">
+              <FiShield className="h-4 w-4" />
               Privacy Policy
             </button>
-            <button className="text-gray-400 hover:text-white transition-colors">
+
+            <button className="flex items-center gap-2 text-gray-400 hover:text-white transition">
+              <FiFileText className="h-4 w-4" />
               Terms of Service
             </button>
-            <button className="text-gray-400 hover:text-white transition-colors">
+
+            <button className="flex items-center gap-2 text-gray-400 hover:text-white transition">
+              <FiHelpCircle className="h-4 w-4" />
               Support
             </button>
           </div>
 
-          <div className="text-gray-500 text-sm">
-            © 2024 FlowFi. Built with ❤️ using React & Tailwind CSS.
+          {/* COPYRIGHT */}
+          <div className="flex items-center justify-center gap-1 text-gray-500 text-sm">
+            © 2024 FlowFi. Built with
+            <FiHeart className="text-red-500 mx-1" />
+            using React & Tailwind CSS.
           </div>
         </motion.div>
       </div>

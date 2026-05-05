@@ -1,29 +1,28 @@
-import React from 'react';
-import HeroSection from './components/HeroSection';
-import ProblemSolution from './components/ProblemSolution';
-import CoreIdea from './components/CoreIdea';
-import PersonaCard from './components/PersonaCard';
-import DashboardPreview from './components/DashboardPreview';
-import GamificationSection from './components/GamificationSection';
-import Features from './components/Features';
-import UserFlow from './components/UserFlow';
-import FinalResult from './components/FinalResult';
-import Footer from './components/Footer';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
+import DashboardPage from './pages/DashboardPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
-    <div className="min-h-screen">
-      <HeroSection />
-      <ProblemSolution />
-      <CoreIdea />
-      <PersonaCard />
-      <DashboardPreview />
-      <GamificationSection />
-      <Features />
-      <UserFlow />
-      <FinalResult />
-      <Footer />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
   );
 }
 
